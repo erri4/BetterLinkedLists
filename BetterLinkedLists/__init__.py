@@ -4,4 +4,4 @@ from .LoopedLinkedList import *
 from .DoubleLoopedLinkedList import *
 
 
-from . import linkedlist_funcs
+from . import linkedlist_funcs as linkedlisttools
