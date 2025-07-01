@@ -1,4 +1,5 @@
 from .LinkedList import Node, NodeType, LinkedList
+from typing import Any
 
 
 class DoubleNode(Node):
@@ -9,7 +10,7 @@ class DoubleNode(Node):
 
 
 class DoubleLinkedList(LinkedList):
-    def append(self, data):
+    def append(self, data: Any | DoubleNode):
         new_node = DoubleNode(data) if not type(data) == DoubleNode else data
         if not self.head:
             self.head = new_node
@@ -21,7 +22,8 @@ class DoubleLinkedList(LinkedList):
         new_node.before = last
 
 
-    def remove(self, data):
+    def remove(self, data: Any | DoubleNode):
+        self.find(data)
         if isinstance(data, NodeType):
             for _ in range(len(self.findall(data))):
                 if self.head == data:
@@ -50,7 +52,7 @@ class DoubleLinkedList(LinkedList):
             last.next = last.next.next
 
 
-    def insert(self, data, where, value):
+    def insert(self, data: Any | DoubleNode, where: bool, value: Any | DoubleNode):
         '''
         where = True: insert before
         where = False: insert after
@@ -101,11 +103,11 @@ class DoubleLinkedList(LinkedList):
                 last.next = new_node
 
 
-    def find(self, value) -> DoubleNode:
+    def find(self, value: Any | DoubleNode) -> DoubleNode:
         return super().find(value)
     
 
-    def findall(self, value) -> list[DoubleNode]:
+    def findall(self, value: Any | DoubleNode) -> list[DoubleNode]:
         return super().findall(value)
     
 

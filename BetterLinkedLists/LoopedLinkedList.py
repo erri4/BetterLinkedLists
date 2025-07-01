@@ -9,7 +9,7 @@ class LoopedNode(Node):
 
 
 class LoopedLinkedList(LinkedList):
-    def append(self, data):
+    def append(self, data: Any | LoopedNode):
         new_node = LoopedNode(data) if not type(data) == LoopedNode else data
         if not self.head:
             self.head = new_node
@@ -22,7 +22,8 @@ class LoopedLinkedList(LinkedList):
         new_node.next = self.head
 
     
-    def remove(self, data: Any | Node):
+    def remove(self, data: Any | LoopedNode):
+        self.find(data)
         if isinstance(data, NodeType):
             for _ in range(len(self.findall(data))):
                 if self.head == data:
@@ -55,7 +56,7 @@ class LoopedLinkedList(LinkedList):
             last.next = last.next.next
 
 
-    def insert(self, data, where, value):
+    def insert(self, data: Any | LoopedNode, where: bool, value: Any | LoopedNode):
         '''
         where = True: insert before
         where = False: insert after
@@ -114,11 +115,11 @@ class LoopedLinkedList(LinkedList):
                 last.next = new_node
 
 
-    def find(self, value) -> LoopedNode:
+    def find(self, value: Any | LoopedNode) -> LoopedNode:
         return super().find(value)
     
 
-    def findall(self, value) -> list[LoopedNode]:
+    def findall(self, value: Any | LoopedNode) -> list[LoopedNode]:
         return super().findall(value)
     
 

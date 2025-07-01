@@ -1,6 +1,7 @@
 from .LoopedLinkedList import LoopedNode, LoopedLinkedList
 from .DoubleLinkedList import DoubleNode, DoubleLinkedList
 from .LinkedList import NodeType
+from typing import Any
 
 class DoubleLoopedNode(DoubleNode, LoopedNode):
     def __init__(self, data):
@@ -12,7 +13,7 @@ class DoubleLoopedNode(DoubleNode, LoopedNode):
  
 
 class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
-    def append(self, data):
+    def append(self, data: Any | DoubleLoopedNode):
         new_node = DoubleLoopedNode(data) if not type(data) == DoubleLoopedNode else data
         if not self.head:
             self.head = new_node
@@ -28,9 +29,28 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
         self.head.before = new_node
 
 
-    def remove(self, data):
+    def remove(self, data: Any | DoubleLoopedNode):
+        self.find(data)
+        if type(data) == DoubleLoopedNode:
+            for _ in range(len(self.findall(data))):
+                if self.head.data == data:
+                    last = self.head
+                    while last.next != self.head:
+                        last = last.next
+                    last.next = self.head.next
+                    self.head = self.head.next
+                    self.head.before = last
+                    continue
+                last = self.head
+                while last.next:
+                    if last.next.data == data:
+                        break
+                    last = last.next
+                last.next = last.next.next
+                last.next.next.before = last
+            return
         for _ in range(len(self.findall(data))):
-            if self.head.data == data:
+            if self.head == data:
                 last = self.head
                 while last.next != self.head:
                     last = last.next
@@ -40,14 +60,14 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
                 continue
             last = self.head
             while last.next:
-                if last.next.data == data:
+                if last.next == data:
                     break
                 last = last.next
             last.next = last.next.next
             last.next.next.before = last
 
 
-    def insert(self, data, where, value):
+    def insert(self, data: Any | DoubleLoopedNode, where: bool, value: Any | DoubleLoopedNode):
         '''
         where = True: insert before
         where = False: insert after
@@ -118,11 +138,11 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
                 last.next = new_node
 
 
-    def find(self, value) -> DoubleLoopedNode:
+    def find(self, value: Any | DoubleLoopedNode) -> DoubleLoopedNode:
         return super().find(value)
     
 
-    def findall(self, value) -> list[DoubleLoopedNode]:
+    def findall(self, value: Any | DoubleLoopedNode) -> list[DoubleLoopedNode]:
         return super().findall(value)
     
 

@@ -48,7 +48,7 @@ class LinkedList(LinkedListType):
             self.append(item)
         self._iter_node = None
 
-    def append(self, data):
+    def append(self, data: Any | Node):
         new_node = Node(data) if not type(data) == Node else data
         if not self.head:
             self.head = new_node
@@ -59,7 +59,7 @@ class LinkedList(LinkedListType):
         last.next = new_node
 
 
-    def insert(self, data, where, value):
+    def insert(self, data: Any | Node, where: bool, value: Any | Node):
         '''
         where = True: insert before
         where = False: insert after
@@ -178,7 +178,7 @@ class LinkedList(LinkedListType):
         raise IndexError("LinkedList index out of range")
     
 
-    def find(self, value):
+    def find(self, value: Any | Node):
         node = self.head
         while node:
             if node.data == value and not isinstance(value, NodeType) or node == value:
