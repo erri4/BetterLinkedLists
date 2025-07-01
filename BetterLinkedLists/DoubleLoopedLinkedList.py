@@ -1,6 +1,6 @@
-from LoopedLinkedList import LoopedNode, LoopedLinkedList
-from DoubleLinkedList import DoubleNode, DoubleLinkedList
-from LinkedList import NodeType
+from .LoopedLinkedList import LoopedNode, LoopedLinkedList
+from .DoubleLinkedList import DoubleNode, DoubleLinkedList
+from .LinkedList import NodeType
 
 class DoubleLoopedNode(DoubleNode, LoopedNode):
     def __init__(self, data):

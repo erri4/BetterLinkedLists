@@ -1,4 +1,4 @@
-from LinkedList import Node, NodeType, LinkedList
+from .LinkedList import Node, NodeType, LinkedList
 
 
 class DoubleNode(Node):
