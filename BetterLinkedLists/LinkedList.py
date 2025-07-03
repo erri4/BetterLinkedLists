@@ -41,7 +41,7 @@ class LinkedList(LinkedListType):
     def __init__(self, *args):
         self.head = None
         self._iter_node = None
-        if len(args) == 0:
+        if len(args) == 1:
             for item in iter(args[0]):
                 self.append(item)
         else:
