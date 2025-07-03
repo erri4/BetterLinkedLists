@@ -40,13 +40,13 @@ class Node(NodeType):
 class LinkedList(LinkedListType):
     def __init__(self, *args):
         self.head = None
-        if len(args) == 1 and isinstance(args[0], (dict, set, list, tuple, )):
-            ls = list(args[0])
-        else:
-            ls = list(args)
-        for item in ls:
-            self.append(item)
         self._iter_node = None
+        if len(args) == 0:
+            for item in iter(args[0]):
+                self.append(item)
+        else:
+            for item in args:
+                self.append(item)
 
     def append(self, data: Any | Node):
         new_node = Node(data) if not type(data) == Node else data
