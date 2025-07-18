@@ -11,33 +11,31 @@ class ItemNotFoundError(Exception):
     pass
 
 
-class NodeType:
-    def __init__(self):
-        self.data = None
-        self.next: NodeType = None
-        self.before: NodeType = None
-
-
 class LinkedListType:
-    head: NodeType = None
-    def find(self, item) -> NodeType: pass
-    def findall(self, item) -> list[NodeType]: pass
-    def append(self, item): pass
-    def remove(self, item): pass
-    def insert(self, data, where, value): pass
-
-
-class Node(NodeType):
-    def __init__(self, data):
-        self.data = data
-        self.next: Node = None
-
+    class NodeType:
+        def __init__(self):
+            self.data = None
+            self.next: LinkedListType.NodeType = None
+            self.before: LinkedListType.NodeType = None
     
-    def __str__(self):
-        return str(self.data)
+        def __str__(self):
+            return str(self.data)
+
+    head: NodeType = None
+    def find(self, item: Any | NodeType) -> NodeType: pass
+    def findall(self, item: Any | NodeType) -> list[NodeType]: pass
+    def append(self, item: Any | NodeType): pass
+    def remove(self, item: Any | NodeType): pass
+    def insert(self, data: Any | NodeType, where: bool, value: Any | NodeType): pass
 
 
 class LinkedList(LinkedListType):
+    class Node(LinkedListType.NodeType):
+        def __init__(self, data):
+            self.data = data
+            self.next: LinkedList.Node = None
+
+
     def __init__(self, *args):
         self.head = None
         self._iter_node = None
@@ -49,7 +47,7 @@ class LinkedList(LinkedListType):
                 self.append(item)
 
     def append(self, data: Any | Node):
-        new_node = Node(data) if not type(data) == Node else data
+        new_node = LinkedList.Node(data) if not type(data) == LinkedList.Node else data
         if not self.head:
             self.head = new_node
             return
@@ -68,10 +66,10 @@ class LinkedList(LinkedListType):
             self.find(value)
         except ItemNotFoundError:
             raise ItemNotFoundError(f"Cannot insert {'before' if where else 'after'} '{str(value)}': '{str(value)}' is not a member of the LinkedList.")
-        new_node = Node(data) if not type(data) == Node else data
+        new_node = LinkedList.Node(data) if not type(data) == LinkedList.Node else data
 
         if where:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 if self.head == value:
                     new_node.next = self.head
                     self.head = new_node
@@ -96,7 +94,7 @@ class LinkedList(LinkedListType):
                 new_node.next = last.next
                 last.next = new_node
         else:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 last = self.head
                 while last.next:
                     if last == value:
@@ -116,7 +114,7 @@ class LinkedList(LinkedListType):
 
     def remove(self, data: Any | Node):
         self.find(data)
-        if type(data) == Node:
+        if type(data) == LinkedList.Node:
             for _ in range(len(self.findall(data))):
                 if data == self.head:
                     self.head = self.head.next
@@ -181,7 +179,7 @@ class LinkedList(LinkedListType):
     def find(self, value: Any | Node):
         node = self.head
         while node:
-            if node.data == value and not isinstance(value, NodeType) or node == value:
+            if node.data == value and not isinstance(value, LinkedListType.NodeType) or node == value:
                 return node
             node = node.next
             if node == self.head or node is None:
@@ -194,9 +192,9 @@ class LinkedList(LinkedListType):
         nodes = []
         node = self.head
         while node:
-            if node.data == value and not isinstance(value, NodeType):
+            if node.data == value and not isinstance(value, LinkedListType.NodeType):
                 nodes.append(node)
-            elif isinstance(value, NodeType) and node == value:
+            elif isinstance(value, LinkedListType.NodeType) and node == value:
                 nodes.append(node)
             node = node.next
             if node == self.head or node is None:

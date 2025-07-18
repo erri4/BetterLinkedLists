@@ -1,20 +1,19 @@
-from .LoopedLinkedList import LoopedNode, LoopedLinkedList
-from .DoubleLinkedList import DoubleNode, DoubleLinkedList
-from .LinkedList import NodeType
+from .LoopedLinkedList import LoopedLinkedList
+from .DoubleLinkedList import DoubleLinkedList
+from .LinkedList import LinkedListType
 from typing import Any
 
-class DoubleLoopedNode(DoubleNode, LoopedNode):
-    def __init__(self, data):
-        super().__init__(data)
-        self.next: DoubleLoopedNode = None
-        self.before: DoubleLoopedNode = None
-        
-
- 
 
 class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
+    class DoubleLoopedNode(DoubleLinkedList.DoubleNode, LoopedLinkedList.LoopedNode):
+        def __init__(self, data):
+            super().__init__(data)
+            self.next: DoubleLoopedLinkedList.DoubleLoopedNode = None
+            self.before: DoubleLoopedLinkedList.DoubleLoopedNode = None
+
+
     def append(self, data: Any | DoubleLoopedNode):
-        new_node = DoubleLoopedNode(data) if not type(data) == DoubleLoopedNode else data
+        new_node = DoubleLoopedLinkedList.DoubleLoopedNode(data) if not type(data) == DoubleLoopedLinkedList.DoubleLoopedNode else data
         if not self.head:
             self.head = new_node
             new_node.before = self.head
@@ -31,7 +30,7 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
 
     def remove(self, data: Any | DoubleLoopedNode):
         self.find(data)
-        if type(data) == DoubleLoopedNode:
+        if type(data) == DoubleLoopedLinkedList.DoubleLoopedNode:
             for _ in range(len(self.findall(data))):
                 if self.head.data == data:
                     last = self.head
@@ -72,10 +71,10 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
         where = True: insert before
         where = False: insert after
         '''
-        new_node = DoubleLoopedNode(data) if not type(data) == DoubleLoopedNode else data
+        new_node = DoubleLoopedLinkedList.DoubleLoopedNode(data) if not type(data) == DoubleLoopedLinkedList.DoubleLoopedNode else data
 
         if where:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 if self.head == value:
                     last = self.head
                     while last.next != self.head:
@@ -116,7 +115,7 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
                 last.next.before = new_node
                 last.next = new_node
         else:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 last = self.head
                 while last.next:
                     if last == value:

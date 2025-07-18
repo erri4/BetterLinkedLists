@@ -1,17 +1,17 @@
-from .LinkedList import Node, NodeType, LinkedList
+from .LinkedList import LinkedList, LinkedListType
 from typing import Any
 
 
-class DoubleNode(Node):
-    def __init__(self, data):
-        super().__init__(data)
-        self.before: DoubleNode = None
-        self.next: DoubleNode = None
-
-
 class DoubleLinkedList(LinkedList):
+    class DoubleNode(LinkedList.Node):
+        def __init__(self, data):
+            super().__init__(data)
+            self.before: DoubleLinkedList.DoubleNode = None
+            self.next: DoubleLinkedList.DoubleNode = None
+
+
     def append(self, data: Any | DoubleNode):
-        new_node = DoubleNode(data) if not type(data) == DoubleNode else data
+        new_node = DoubleLinkedList.DoubleNode(data) if not type(data) == DoubleLinkedList.DoubleNode else data
         if not self.head:
             self.head = new_node
             return
@@ -24,7 +24,7 @@ class DoubleLinkedList(LinkedList):
 
     def remove(self, data: Any | DoubleNode):
         self.find(data)
-        if isinstance(data, NodeType):
+        if isinstance(data, LinkedListType.NodeType):
             for _ in range(len(self.findall(data))):
                 if self.head == data:
                     self.head.next.before = None
@@ -57,10 +57,10 @@ class DoubleLinkedList(LinkedList):
         where = True: insert before
         where = False: insert after
         '''
-        new_node = DoubleNode(data) if not type(data) == DoubleNode else data
+        new_node = DoubleLinkedList.DoubleNode(data) if not type(data) == DoubleLinkedList.DoubleNode else data
 
         if where:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 last = self.head
                 while last.next:
                     if last.next == value:
@@ -81,7 +81,7 @@ class DoubleLinkedList(LinkedList):
                 new_node.before = last
                 last.next = new_node
         else:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 last = self.head
                 while last.next:
                     if last == value:

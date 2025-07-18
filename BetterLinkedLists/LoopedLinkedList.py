@@ -1,16 +1,16 @@
-from .LinkedList import Node, NodeType, LinkedList
+from .LinkedList import LinkedList, LinkedListType
 from typing import Any
 
 
-class LoopedNode(Node):
-    def __init__(self, data):
-        super().__init__(data)
-        self.next: LoopedNode = None
-
-
 class LoopedLinkedList(LinkedList):
+    class LoopedNode(LinkedList.Node):
+        def __init__(self, data):
+            super().__init__(data)
+            self.next: LoopedLinkedList.LoopedNode = None
+
+
     def append(self, data: Any | LoopedNode):
-        new_node = LoopedNode(data) if not type(data) == LoopedNode else data
+        new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data
         if not self.head:
             self.head = new_node
             new_node.next = self.head
@@ -24,7 +24,7 @@ class LoopedLinkedList(LinkedList):
     
     def remove(self, data: Any | LoopedNode):
         self.find(data)
-        if isinstance(data, NodeType):
+        if isinstance(data, LinkedListType.NodeType):
             for _ in range(len(self.findall(data))):
                 if self.head == data:
                     last = self.head
@@ -61,10 +61,10 @@ class LoopedLinkedList(LinkedList):
         where = True: insert before
         where = False: insert after
         '''
-        new_node = LoopedNode(data) if not type(data) == LoopedNode else data
+        new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data
 
         if where:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 if self.head == value:
                     last = self.head
                     while last.next != self.head:
@@ -97,7 +97,7 @@ class LoopedLinkedList(LinkedList):
                 new_node.next = last.next
                 last.next = new_node
         else:
-            if isinstance(value, NodeType):
+            if isinstance(value, LinkedListType.NodeType):
                 last = self.head
                 while last.next:
                     if last == value:

@@ -5,7 +5,7 @@ from .DoubleLoopedLinkedList import *
 from typing import Any
 
 
-def jump(ll: DoubleLoopedLinkedList, start_value: Any | DoubleLoopedNode, jumps: Any | DoubleLoopedNode) -> DoubleLoopedNode:
+def jump(ll: DoubleLoopedLinkedList, start_value: Any | DoubleLoopedLinkedList.DoubleLoopedNode, jumps: Any | DoubleLoopedLinkedList.DoubleLoopedNode) -> DoubleLoopedLinkedList.DoubleLoopedNode:
     node = ll.find(start_value)
     if jumps >= 0:
         for _ in range(jumps):
