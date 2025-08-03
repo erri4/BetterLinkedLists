@@ -179,6 +179,16 @@ class LinkedList(LinkedListType):
             if node is self.head or node is None:
                 break
         return nodes
+    
+
+    def __eq__(self, other):
+        if not isinstance(other, LinkedListType):
+            return False
+        
+        if len(self) != len(other):
+            return False
+        
+        return all([self[i] == other[i] for i in range(len(self))])
 
     
     def __repr__(self):

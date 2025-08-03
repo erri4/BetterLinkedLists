@@ -1,4 +1,4 @@
-from .LinkedList import LinkedList, LinkedListType
+from .LinkedList import LinkedList, LinkedListType, BEFORE, AFTER
 from typing import Any
 
 
@@ -24,28 +24,14 @@ class DoubleLinkedList(LinkedList):
 
     def remove(self, data: Any | DoubleNode):
         self.find(data)
-        if isinstance(data, LinkedListType.NodeType):
-            for _ in range(len(self.findall(data))):
-                if self.head == data:
-                    self.head.next.before = None
-                    self.head = self.head.next
-                    continue
-                last = self.head
-                while last.next:
-                    if last.next == data:
-                        break
-                    last = last.next
-                if last.next.next is not None: last.next.next.before = last
-                last.next = last.next.next
-            return
         for _ in range(len(self.findall(data))):
-            if self.head.data == data:
+            if self.head == data:
                 self.head.next.before = None
                 self.head = self.head.next
                 continue
             last = self.head
             while last.next:
-                if last.next.data == data:
+                if last.next == data:
                     break
                 last = last.next
             if last.next.next is not None: last.next.next.before = last
@@ -60,47 +46,25 @@ class DoubleLinkedList(LinkedList):
         new_node = DoubleLinkedList.DoubleNode(data) if not type(data) == DoubleLinkedList.DoubleNode else data
 
         if where:
-            if isinstance(value, LinkedListType.NodeType):
-                last = self.head
-                while last.next:
-                    if last.next == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                new_node.next.before = new_node
-                new_node.before = last
-                last.next = new_node
-            else:
-                last = self.head
-                while last.next:
-                    if last.next.data == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                new_node.next.before = new_node
-                new_node.before = last
-                last.next = new_node
+            last = self.head
+            while last.next:
+                if last.next == value:
+                    break
+                last = last.next
+            new_node.next = last.next
+            new_node.next.before = new_node
+            new_node.before = last
+            last.next = new_node
         else:
-            if isinstance(value, LinkedListType.NodeType):
-                last = self.head
-                while last.next:
-                    if last == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                new_node.next.before = new_node
-                new_node.before = last
-                last.next = new_node
-            else:
-                last = self.head
-                while last.next:
-                    if last.data == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                new_node.next.before = new_node
-                new_node.before = last
-                last.next = new_node
+            last = self.head
+            while last.next:
+                if last == value:
+                    break
+                last = last.next
+            new_node.next = last.next
+            new_node.next.before = new_node
+            new_node.before = last
+            last.next = new_node
 
 
     def find(self, value: Any | DoubleNode) -> DoubleNode:

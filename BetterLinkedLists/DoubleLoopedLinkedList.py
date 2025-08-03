@@ -1,6 +1,6 @@
 from .LoopedLinkedList import LoopedLinkedList
 from .DoubleLinkedList import DoubleLinkedList
-from .LinkedList import LinkedListType
+from .LinkedList import LinkedListType, BEFORE, AFTER
 from typing import Any
 
 
@@ -30,26 +30,8 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
 
     def remove(self, data: Any | DoubleLoopedNode):
         self.find(data)
-        if type(data) == DoubleLoopedLinkedList.DoubleLoopedNode:
-            for _ in range(len(self.findall(data))):
-                if self.head.data == data:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    last.next = self.head.next
-                    self.head = self.head.next
-                    self.head.before = last
-                    continue
-                last = self.head
-                while last.next:
-                    if last.next.data == data:
-                        break
-                    last = last.next
-                last.next = last.next.next
-                last.next.next.before = last
-            return
         for _ in range(len(self.findall(data))):
-            if self.head == data:
+            if self.head.data == data:
                 last = self.head
                 while last.next != self.head:
                     last = last.next
@@ -59,7 +41,7 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
                 continue
             last = self.head
             while last.next:
-                if last.next == data:
+                if last.next.data == data:
                     break
                 last = last.next
             last.next = last.next.next
@@ -74,67 +56,35 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
         new_node = DoubleLoopedLinkedList.DoubleLoopedNode(data) if not type(data) == DoubleLoopedLinkedList.DoubleLoopedNode else data
 
         if where:
-            if isinstance(value, LinkedListType.NodeType):
-                if self.head == value:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    new_node.next = self.head
-                    new_node.before = last
-                    last.next = new_node
-                    self.head = new_node
-                    new_node.next.before = new_node
-                    return
+            if self.head == value:
                 last = self.head
-                while last.next:
-                    if last.next == value:
-                        break
+                while last.next != self.head:
                     last = last.next
-                new_node.next = last.next
+                new_node.next = self.head
                 new_node.before = last
-                last.next.before = new_node
                 last.next = new_node
-            else:
-                if self.head.data == value:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    new_node.next = self.head
-                    new_node.before = last
-                    last.next = new_node
-                    self.head = new_node
-                    new_node.next.before = new_node
-                    return
-                last = self.head
-                while last.next:
-                    if last.next.data == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                new_node.before = last
-                last.next.before = new_node
-                last.next = new_node
+                self.head = new_node
+                new_node.next.before = new_node
+                return
+            last = self.head
+            while last.next:
+                if last.next == value:
+                    break
+                last = last.next
+            new_node.next = last.next
+            new_node.before = last
+            last.next.before = new_node
+            last.next = new_node
         else:
-            if isinstance(value, LinkedListType.NodeType):
-                last = self.head
-                while last.next:
-                    if last == value:
-                        break
-                    last = last.next
-                last.next.before = new_node
-                new_node.next = last.next
-                new_node.before = last
-                last.next = new_node
-            else:
-                last = self.head
-                while last.next:
-                    if last.data == value:
-                        break
-                    last = last.next
-                last.next.before = new_node
-                new_node.next = last.next
-                new_node.before = last
-                last.next = new_node
+            last = self.head
+            while last.next:
+                if last == value:
+                    break
+                last = last.next
+            last.next.before = new_node
+            new_node.next = last.next
+            new_node.before = last
+            last.next = new_node
 
 
     def find(self, value: Any | DoubleLoopedNode) -> DoubleLoopedNode:

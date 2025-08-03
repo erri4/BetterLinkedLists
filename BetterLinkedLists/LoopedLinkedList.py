@@ -1,4 +1,4 @@
-from .LinkedList import LinkedList, LinkedListType
+from .LinkedList import LinkedList, LinkedListType, BEFORE, AFTER
 from typing import Any
 
 
@@ -64,55 +64,29 @@ class LoopedLinkedList(LinkedList):
         new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data
 
         if where:
-            if isinstance(value, LinkedListType.NodeType):
-                if self.head == value:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    new_node.next = self.head
-                    last.next = new_node
-                    self.head = new_node
-                    return
+            if self.head == value:
                 last = self.head
-                while last.next:
-                    if last.next == value:
-                        break
+                while last.next != self.head:
                     last = last.next
-                new_node.next = last.next
+                new_node.next = self.head
                 last.next = new_node
-            else:
-                if self.head.data == value:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    new_node.next = self.head
-                    last.next = new_node
-                    self.head = new_node
-                    return
-                last = self.head
-                while last.next:
-                    if last.next.data == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                last.next = new_node
+                self.head = new_node
+                return
+            last = self.head
+            while last.next:
+                if last.next == value:
+                    break
+                last = last.next
+            new_node.next = last.next
+            last.next = new_node
         else:
-            if isinstance(value, LinkedListType.NodeType):
-                last = self.head
-                while last.next:
-                    if last == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                last.next = new_node
-            else:
-                last = self.head
-                while last.next:
-                    if last.data == value:
-                        break
-                    last = last.next
-                new_node.next = last.next
-                last.next = new_node
+            last = self.head
+            while last.next:
+                if last == value:
+                    break
+                last = last.next
+            new_node.next = last.next
+            last.next = new_node
 
 
     def find(self, value: Any | LoopedNode) -> LoopedNode:
@@ -129,7 +103,7 @@ class LoopedLinkedList(LinkedList):
         if node is None: return r + '    empty\n}'
         r += f'     (head) data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'    (tail) (head) data: {node.data}'
         node = node.next
-        if node == self.head:
+        if node.next == self.head:
             r += '\n}'
             return r
         r += f'     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'     (tail) data: {node.data}, next: (head) {node.next.data}'
@@ -137,6 +111,6 @@ class LoopedLinkedList(LinkedList):
             node = node.next
             if node == self.head or node is None:
                 break
-            r += f'     data: {node.data}, next: {node.next.data}\n' if not node.next == self.head else f'     (tail) data: {node.data}, next: (head) {node.next.data}'
+            r += f'     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'     (tail) data: {node.data}, next: (head) {node.next.data}'
         r += '\n}'
         return r
