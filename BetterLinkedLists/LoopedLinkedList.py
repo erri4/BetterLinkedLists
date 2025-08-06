@@ -8,6 +8,7 @@ class LoopedLinkedList(LinkedList):
             super().__init__(data)
             self.next: LoopedLinkedList.LoopedNode = None
 
+    head: LoopedNode
 
     def append(self, data: Any | LoopedNode):
         new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data

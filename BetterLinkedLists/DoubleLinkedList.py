@@ -9,6 +9,7 @@ class DoubleLinkedList(LinkedList):
             self.before: DoubleLinkedList.DoubleNode = None
             self.next: DoubleLinkedList.DoubleNode = None
 
+    head: DoubleNode
 
     def append(self, data: Any | DoubleNode):
         new_node = DoubleLinkedList.DoubleNode(data) if not type(data) == DoubleLinkedList.DoubleNode else data

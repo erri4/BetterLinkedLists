@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Self, NoReturn
 
 BEFORE = True
 AFTER = False
@@ -34,6 +34,18 @@ class LinkedListType:
     def remove(self, item: Any | NodeType): pass
     def insert(self, data: Any | NodeType, where: bool, value: Any | NodeType): pass
 
+    def __iter__(self) -> Self:
+        return self
+    def __next__(self) -> Any | NoReturn:
+        raise TypeError(f"{self} is not subscriptable")
+    def __len__(self) -> int:
+        return -1
+    def __getitem__(self, n) -> NodeType | NoReturn:
+        raise TypeError(f"{self} is not subscriptable")
+    def __eq__(self, other) -> bool:
+        return False
+    def __repr__(self) -> str:
+        return f"<{__name__}.LinkedListType object at {id(self)}>"
 
 class LinkedList(LinkedListType):
     class Node(LinkedListType.NodeType):
@@ -41,6 +53,7 @@ class LinkedList(LinkedListType):
             self.data = data
             self.next: LinkedList.Node | None = None
 
+    head: Node
 
     def __init__(self, *args):
         self.head: LinkedList.Node | None = None
@@ -157,7 +170,7 @@ class LinkedList(LinkedListType):
         raise IndexError("LinkedList index out of range")
     
 
-    def find(self, value: Any | Node):
+    def find(self, value: Any | Node) -> Node:
         node = self.head
         while node:
             if node == value:

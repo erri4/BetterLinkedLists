@@ -1,6 +1,6 @@
 from .LoopedLinkedList import LoopedLinkedList
 from .DoubleLinkedList import DoubleLinkedList
-from .LinkedList import LinkedListType, BEFORE, AFTER
+from .LinkedList import _Node_T, BEFORE, AFTER
 from typing import Any
 
 
@@ -11,8 +11,9 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
             self.next: DoubleLoopedLinkedList.DoubleLoopedNode = None
             self.before: DoubleLoopedLinkedList.DoubleLoopedNode = None
 
+    head: DoubleLoopedNode
 
-    def append(self, data: Any | DoubleLoopedNode):
+    def append(self, data: Any | _Node_T):
         new_node = DoubleLoopedLinkedList.DoubleLoopedNode(data) if not type(data) == DoubleLoopedLinkedList.DoubleLoopedNode else data
         if not self.head:
             self.head = new_node
@@ -28,7 +29,7 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
         self.head.before = new_node
 
 
-    def remove(self, data: Any | DoubleLoopedNode):
+    def remove(self, data: Any | _Node_T):
         self.find(data)
         for _ in range(len(self.findall(data))):
             if self.head.data == data:
@@ -48,7 +49,7 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
             last.next.next.before = last
 
 
-    def insert(self, data: Any | DoubleLoopedNode, where: bool, value: Any | DoubleLoopedNode):
+    def insert(self, data: Any | _Node_T, where: bool, value: Any | _Node_T):
         '''
         where = True: insert before
         where = False: insert after
@@ -87,11 +88,11 @@ class DoubleLoopedLinkedList(DoubleLinkedList, LoopedLinkedList):
             last.next = new_node
 
 
-    def find(self, value: Any | DoubleLoopedNode) -> DoubleLoopedNode:
+    def find(self, value: Any | _Node_T) -> _Node_T:
         return super().find(value)
     
 
-    def findall(self, value: Any | DoubleLoopedNode) -> list[DoubleLoopedNode]:
+    def findall(self, value: Any | _Node_T) -> list[_Node_T]:
         return super().findall(value)
     
 
