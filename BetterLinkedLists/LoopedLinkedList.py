@@ -1,48 +1,34 @@
-from .LinkedList import LinkedList, LinkedListType, BEFORE, AFTER
-from typing import Any
+from .LinkedList import LinkedList
 
 
-class LoopedLinkedList(LinkedList):
-    class LoopedNode(LinkedList.Node):
-        def __init__(self, data):
-            super().__init__(data)
-            self.next: LoopedLinkedList.LoopedNode = None
+class LoopedLinkedList[T](LinkedList):
+    class LoopedNode[N_T](LinkedList.Node):
+        def __init__(self, data: N_T) -> None:
+            self.data: N_T = data
+            self.next: LoopedLinkedList.LoopedNode[N_T] | None
 
-    head: LoopedNode
+    head: LoopedNode[T]
 
-    def append(self, data: Any | LoopedNode):
-        new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data
+    def append(self, data: LoopedNode[T]):
+        new_node = (
+            LoopedLinkedList.LoopedNode(data)
+            if type(data) is not LoopedLinkedList.LoopedNode
+            else data
+        )
         if not self.head:
             self.head = new_node
             new_node.next = self.head
             return
         last = self.head
-        while not last.next is self.head:
+        while last.next is not self.head:
             last = last.next
         last.next = new_node
         new_node.next = self.head
 
-    
-    def remove(self, data: Any | LoopedNode):
+    def remove(self, data: LoopedNode[T]):
         self.find(data)
-        if isinstance(data, LinkedListType.NodeType):
-            for _ in range(len(self.findall(data))):
-                if self.head == data:
-                    last = self.head
-                    while last.next != self.head:
-                        last = last.next
-                    last.next = self.head.next
-                    self.head = self.head.next
-                    continue
-                last = self.head
-                while last.next:
-                    if last.next == data:
-                        break
-                    last = last.next
-                last.next = last.next.next
-            return
         for _ in range(len(self.findall(data))):
-            if self.head.data == data:
+            if self.head == data:
                 last = self.head
                 while last.next != self.head:
                     last = last.next
@@ -51,18 +37,21 @@ class LoopedLinkedList(LinkedList):
                 continue
             last = self.head
             while last.next:
-                if last.next.data == data:
+                if last.next == data:
                     break
                 last = last.next
             last.next = last.next.next
 
-
-    def insert(self, data: Any | LoopedNode, where: bool, value: Any | LoopedNode):
-        '''
+    def insert(self, data: LoopedNode[T], where: bool, value: LoopedNode[T]):
+        """
         where = True: insert before
         where = False: insert after
-        '''
-        new_node = LoopedLinkedList.LoopedNode(data) if not type(data) == LoopedLinkedList.LoopedNode else data
+        """
+        new_node = (
+            LoopedLinkedList.LoopedNode(data)
+            if type(data) is not LoopedLinkedList.LoopedNode
+            else data
+        )
 
         if where:
             if self.head == value:
@@ -89,29 +78,39 @@ class LoopedLinkedList(LinkedList):
             new_node.next = last.next
             last.next = new_node
 
-
-    def find(self, value: Any | LoopedNode) -> LoopedNode:
+    def find(self, value: LoopedNode[T]) -> LoopedNode[T]:  # type: ignore[override]
         return super().find(value)
-    
 
-    def findall(self, value: Any | LoopedNode) -> list[LoopedNode]:
+    def findall(self, value: LoopedNode[T]) -> list[LoopedNode[T]]:  # type: ignore[override]
         return super().findall(value)
-    
 
     def __repr__(self):
-        r = 'LoopedLinkedList{\n'
+        r = "LoopedLinkedList{\n"
         node = self.head
-        if node is None: return r + '    empty\n}'
-        r += f'     (head) data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'    (tail) (head) data: {node.data}'
+        if node is None:
+            return r + "    empty\n}"
+        r += (
+            f"     (head) data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n"
+            if not node.next == self.head
+            else f"    (tail) (head) data: {node.data}"
+        )
         node = node.next
         if node.next == self.head:
-            r += '\n}'
+            r += "\n}"
             return r
-        r += f'     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'     (tail) data: {node.data}, next: (head) {node.next.data}'
+        r += (
+            f"     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n"
+            if not node.next == self.head
+            else f"     (tail) data: {node.data}, next: (head) {node.next.data}"
+        )
         while node != self.head:
             node = node.next
             if node == self.head or node is None:
                 break
-            r += f'     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n' if not node.next == self.head else f'     (tail) data: {node.data}, next: (head) {node.next.data}'
-        r += '\n}'
+            r += (
+                f"     data: {node.data}, next: {node.next.data if not node.next.next == self.head else '(tail) ' + node.next.data}\n"
+                if not node.next == self.head
+                else f"     (tail) data: {node.data}, next: (head) {node.next.data}"
+            )
+        r += "\n}"
         return r

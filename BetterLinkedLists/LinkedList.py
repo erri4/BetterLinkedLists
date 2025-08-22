@@ -1,4 +1,4 @@
-from typing import Any, Self, NoReturn
+from typing import Any, Self
 
 BEFORE = True
 AFTER = False
@@ -8,65 +8,89 @@ class ItemNotFoundError(Exception):
     """
     Item does not appear in the LinkedList.
     """
+
     pass
 
 
-class LinkedListType:
-    class NodeType:
-        def __init__(self):
-            self.data = None
-            self.next: LinkedListType.NodeType | None = None
-            self.before: LinkedListType.NodeType | None = None
+class LinkedListType[T]:
+    class NodeType[N_T]:
+        def __init__(self, data: N_T) -> None:
+            self.data: N_T
+            self.next: LinkedListType.NodeType[N_T]
+            self.before: LinkedListType.NodeType[N_T]
 
         def __eq__(self, other):
-            if isinstance(other, LinkedListType.NodeType):
+            if isinstance(other, LinkedListType.NodeType[N_T]):
                 return self.data == other.data
             else:
                 return self.data == other
-    
+
         def __str__(self):
             return str(self.data)
 
-    head: NodeType | None = None
-    def find(self, item: Any | NodeType) -> NodeType: return LinkedListType.NodeType()
-    def findall(self, item: Any | NodeType) -> list[NodeType]: return [LinkedListType.NodeType()]
-    def append(self, item: Any | NodeType): pass
-    def remove(self, item: Any | NodeType): pass
-    def insert(self, data: Any | NodeType, where: bool, value: Any | NodeType): pass
+    head: NodeType[T] | None = None
+
+    def find(self, item: Any | NodeType[T]) -> NodeType[T]:
+        return LinkedListType.NodeType()
+
+    def findall(self, item: Any | NodeType[T]) -> list[NodeType[T]]:
+        return [LinkedListType.NodeType()]
+
+    def append(self, item: Any | NodeType[T]):
+        pass
+
+    def remove(self, item: Any | NodeType[T]):
+        pass
+
+    def insert(self, data: Any | NodeType[T], where: bool, value: Any | NodeType[T]):
+        pass
 
     def __iter__(self) -> Self:
         return self
-    def __next__(self) -> Any | NoReturn:
+
+    def __next__(self) -> Any:
         raise TypeError(f"{self} is not subscriptable")
+
     def __len__(self) -> int:
         return -1
-    def __getitem__(self, n) -> NodeType | NoReturn:
+
+    def __getitem__(self, n) -> NodeType[T]:
         raise TypeError(f"{self} is not subscriptable")
+
     def __eq__(self, other) -> bool:
         return False
+
     def __repr__(self) -> str:
         return f"<{__name__}.LinkedListType object at {id(self)}>"
 
-class LinkedList(LinkedListType):
-    class Node(LinkedListType.NodeType):
-        def __init__(self, data):
-            self.data = data
-            self.next: LinkedList.Node | None = None
 
-    head: Node
+class LinkedList[T](LinkedListType):
+    class Node[N_T](LinkedListType.NodeType):
+        def __init__(self, data: N_T) -> None:
+            self.data: N_T = data
+            self.next: LinkedList.Node[N_T] = None
 
-    def __init__(self, *args):
-        self.head: LinkedList.Node | None = None
+    head: Node[T]
+
+    def __init__(self, *args) -> None:
         self._iter_node = None
-        if len(args) == 1:
+        if len(args) == 1 and isinstance(args[0], (tuple, list)):
+            if len(args[0]) == 0:
+                self.head = None
+                return
+            self.head = LinkedList.Node(args[0][0])
             for item in iter(args[0]):
                 self.append(item)
         else:
+            if len(args) == 0:
+                self.head = None
+                return
+            self.head = LinkedList.Node(args[0])
             for item in args:
                 self.append(item)
 
-    def append(self, data: Any | Node):
-        new_node = LinkedList.Node(data) if not type(data) is LinkedList.Node else data
+    def append(self, data: Any | Node[T]):
+        new_node = LinkedList.Node(data) if type(data) is not LinkedList.Node else data
         if not self.head:
             self.head = new_node
             return
@@ -75,18 +99,19 @@ class LinkedList(LinkedListType):
             last = last.next
         last.next = new_node
 
-
-    def insert(self, data: Any | Node, where: bool, value: Any | Node):
-        '''
+    def insert(self, data: Any | Node[T], where: bool, value: Any | Node[T]):
+        """
         where = True: insert before
         where = False: insert after
-        '''
+        """
         try:
             self.find(value)
             assert self.head is not None
         except (ItemNotFoundError, AssertionError):
-            raise ItemNotFoundError(f"Cannot insert {'before' if where else 'after'} '{str(value)}': '{str(value)}' is not a member of the LinkedList.")
-        new_node = LinkedList.Node(data) if not type(data) == LinkedList.Node else data
+            raise ItemNotFoundError(
+                f"Cannot insert {'before' if where else 'after'} '{str(value)}': '{str(value)}' is not a member of the LinkedList."
+            )
+        new_node = LinkedList.Node(data) if type(data) is not LinkedList.Node else data
 
         if where:
             if self.head == value:
@@ -111,8 +136,7 @@ class LinkedList(LinkedListType):
             last.next = new_node
             return
 
-
-    def remove(self, data: Any | Node):
+    def remove(self, data: Any | Node[T]):
         for _ in range(len(self.findall(data))):
             try:
                 self.find(data)
@@ -131,14 +155,15 @@ class LinkedList(LinkedListType):
                 last.next = last.next.next
         return
 
-
     def __iter__(self):
         self._iter_node = self.head
         self._iter_started = False
         return self
 
     def __next__(self):
-        if self._iter_node == None or (self._iter_node == self.head and self._iter_started):
+        if self._iter_node is None or (
+            self._iter_node == self.head and self._iter_started
+        ):
             self._iter_node = self.head
             self._iter_started = False
             raise StopIteration
@@ -146,14 +171,12 @@ class LinkedList(LinkedListType):
         self._iter_node = self._iter_node.next
         self._iter_started = True
         return data
-    
 
     def __len__(self):
         count = 0
         for _ in self:
             count += 1
         return count
-    
 
     def __getitem__(self, n):
         if n < 0:
@@ -168,9 +191,8 @@ class LinkedList(LinkedListType):
             if node == self.head or node is None:
                 break
         raise IndexError("LinkedList index out of range")
-    
 
-    def find(self, value: Any | Node) -> Node:
+    def find(self, value: Any | Node[T]) -> Node[T]:
         node = self.head
         while node:
             if node == value:
@@ -179,9 +201,8 @@ class LinkedList(LinkedListType):
             if node is self.head or node is None:
                 break
         raise ItemNotFoundError("The item was not found in the LinkedList.")
-    
 
-    def findall(self, value: Any | Node) -> list[Node]:
+    def findall(self, value: Any | Node[T]) -> list[Node[T]]:
         self.find(value)
         nodes = []
         node = self.head
@@ -192,28 +213,34 @@ class LinkedList(LinkedListType):
             if node is self.head or node is None:
                 break
         return nodes
-    
 
     def __eq__(self, other):
         if not isinstance(other, LinkedListType):
             return False
-        
+
         if len(self) != len(other):
             return False
-        
+
         return all([self[i] == other[i] for i in range(len(self))])
 
-    
     def __repr__(self):
-        r = 'LinkedList{\n'
+        r = "LinkedList{\n"
         node = self.head
-        if node is None: return r + '    empty\n}'
-        r += f'     (head) data: {node.data}, next: {node.next.data if not node.next.next == None else '(tail) ' + node.next.data}\n' if not node.next == None else f'    (tail) (head) data: {node.data}'
+        if node is None:
+            return r + "    empty\n}"
+        r += (
+            f"     (head) data: {node.data}, next: {node.next.data if node.next.next is not None else '(tail) ' + node.next.data}\n"
+            if node.next is not None
+            else f"    (tail) (head) data: {node.data}"
+        )
         while node:
             node = node.next
             if node == self.head or node is None:
                 break
-            r += f'     data: {node.data}, next: {node.next.data if not node.next.next == None else '(tail) ' + node.next.data}\n' if not node.next == None else f'     (tail) data: {node.data}'
-        r += '\n}'
+            r += (
+                f"     data: {node.data}, next: {node.next.data if node.next.next is not None else '(tail) ' + node.next.data}\n"
+                if node.next is not None
+                else f"     (tail) data: {node.data}"
+            )
+        r += "\n}"
         return r
-   

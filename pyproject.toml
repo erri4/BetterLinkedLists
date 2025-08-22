@@ -14,3 +14,6 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/erri4/BetterLinkedLists"
 "Bug Tracker" = "https://github.com/erri4/BetterLinkedLists/issues"
+
+[tool.ruff]
+target-version = "py313"

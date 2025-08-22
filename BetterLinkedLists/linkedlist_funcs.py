@@ -1,22 +1,27 @@
-from .LinkedList import *
-from .DoubleLinkedList import *
-from .LoopedLinkedList import *
-from .DoubleLoopedLinkedList import *
-from typing import Any
+from .LinkedList import LinkedListType
+from .DoubleLoopedLinkedList import DoubleLoopedLinkedList
 
 
-def jump(ll: DoubleLoopedLinkedList, start_value: Any | DoubleLoopedLinkedList.DoubleLoopedNode, jumps: int) -> DoubleLoopedLinkedList.DoubleLoopedNode:
+def jump[T](
+    ll: DoubleLoopedLinkedList[T],
+    start_value: DoubleLoopedLinkedList.DoubleLoopedNode[T] | T,
+    jumps: int,
+) -> DoubleLoopedLinkedList.DoubleLoopedNode[T]:
     node = ll.find(start_value)
     if jumps >= 0:
         for _ in range(jumps):
+            if node is None:
+                return None
             node = node.next
     else:
         for _ in range(-jumps):
+            if node is None:
+                return None
             node = node.before
     return node
 
 
-def has_duplicates(linkedlist: LinkedListType) -> bool:
+def has_duplicates[T](linkedlist: LinkedListType[T]) -> bool:
     seen = set()
     for value in linkedlist:
         if value in seen:
@@ -25,7 +30,7 @@ def has_duplicates(linkedlist: LinkedListType) -> bool:
     return False
 
 
-def reverse(linkedlist: LinkedListType) -> LinkedListType:
+def reverse[T](linkedlist: LinkedListType[T]) -> LinkedListType[T]:
     new_ll = type(linkedlist)()
     node = linkedlist.head
     nodes = []
